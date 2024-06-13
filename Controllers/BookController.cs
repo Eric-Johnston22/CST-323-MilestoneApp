@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CST_323_MilestoneApp.Controllers
 {
+    
     public class BookController : Controller
     {
         private readonly BookDAO _bookDAO;
@@ -18,7 +19,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             var books = await _bookDAO.GetAllBooksAsync();
 
-            return View();
+            return View(books);
         }
     }
 }
