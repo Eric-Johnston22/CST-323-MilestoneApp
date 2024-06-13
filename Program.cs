@@ -1,3 +1,7 @@
+using CST_323_MilestoneApp.Controllers;
+using CST_323_MilestoneApp.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace CST_323_MilestoneApp
 {
     public class Program
@@ -8,6 +12,19 @@ namespace CST_323_MilestoneApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add user secrets configuration
+            builder.Configuration.AddUserSecrets<Program>();
+
+            builder.Services.AddScoped<BookDAO>();
+
+            // Retrieve the connection string
+            var connectionString = "Server=localhost;Database=librarydb;User=root;Password=root;";
+            Console.WriteLine($"Connection String: {connectionString}");  // Debug output
+
+            // Add services to the container
+            builder.Services.AddDbContext<LibraryContext>(options =>
+                options.UseMySQL(connectionString));
 
             var app = builder.Build();
 
