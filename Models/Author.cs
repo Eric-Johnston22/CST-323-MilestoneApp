@@ -5,12 +5,12 @@ namespace CST_323_MilestoneApp.Models
     public class Author
     {
         [Key]
-        public int author_Id { get; set; }
+        public int Author_Id { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<Book>? Books { get; set; }
     }
 }

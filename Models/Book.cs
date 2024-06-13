@@ -6,23 +6,23 @@ namespace CST_323_MilestoneApp.Models
     public class Book
     {
         [Key]
-        public int book_id { get; set; }
+        public int Book_id { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string title { get; set; }
+        public string Title { get; set; }
 
-        [ForeignKey("author_Id")]
-        public int author_id { get; set; }
+        [ForeignKey("Author_Id")]
+        public int Author_id { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string isbn { get; set; }
+        public string ISBN { get; set; }
 
-        public DateTime published_date { get; set; }
+        public DateTime Published_date { get; set; }
 
         [StringLength(255)]
-        public string genre { get; set; }
+        public string Genre { get; set; }
 
         public virtual Author Author { get; set; }
     }

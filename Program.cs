@@ -19,7 +19,7 @@ namespace CST_323_MilestoneApp
             builder.Services.AddScoped<BookDAO>();
 
             // Retrieve the connection string
-            var connectionString = "Server=localhost;Database=librarydb;User=root;Password=root;";
+            var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
             Console.WriteLine($"Connection String: {connectionString}");  // Debug output
 
             // Add services to the container

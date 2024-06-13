@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CST_323_MilestoneApp.Controllers
 {
-    
     public class BookController : Controller
     {
         private readonly BookDAO _bookDAO;
