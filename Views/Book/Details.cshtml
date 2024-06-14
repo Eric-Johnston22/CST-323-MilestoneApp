@@ -1,0 +1,49 @@
+﻿@model CST_323_MilestoneApp.Models.Book
+
+@{
+    ViewBag.Title = "Book Details";
+}
+
+<h2>Book Details</h2>
+
+<div>
+    <h4>@Model.Title</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Title
+        </dd>
+
+        <dt class="col-sm-2">
+            Author
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Author.Name
+        </dd>
+
+        <dt class="col-sm-2">
+            ISBN
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ISBN
+        </dd>
+
+        <dt class="col-sm-2">
+            Published Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Published_date.ToShortDateString()
+        </dd>
+
+        <dt class="col-sm-2">
+            Genre
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Genre
+        </dd>
+    </dl>
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -19,5 +19,12 @@ namespace CST_323_MilestoneApp.Services
         }
 
         // Additional methods for CRUD operations to be added here
+
+        public async Task<Book> GetBookById(int bookId)
+        {
+            var book = await _context.Books.Include(b => b.Author).FirstOrDefaultAsync(b => b.Book_id == bookId);
+
+            return book;
+        }
     }
 }

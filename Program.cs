@@ -17,6 +17,7 @@ namespace CST_323_MilestoneApp
             builder.Configuration.AddUserSecrets<Program>();
 
             builder.Services.AddScoped<BookDAO>();
+            builder.Services.AddScoped<AuthorDAO>();
 
             // Retrieve the connection string
             var connectionString = builder.Configuration.GetConnectionString("LibraryContext");

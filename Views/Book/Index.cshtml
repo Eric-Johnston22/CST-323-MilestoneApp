@@ -27,7 +27,7 @@
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
                 <td>@Html.DisplayFor(modelItem => item.Author.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.ISBN)</td>
-                <td>@Html.DisplayFor(modelItem => item.Published_date)</td>
+                <td>@Html.DisplayFor(modelItem => item.Published_date)</td> @* find way to remove time from published date *@
                 <td>@Html.DisplayFor(modelItem => item.Genre)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Book_id">Edit</a> |

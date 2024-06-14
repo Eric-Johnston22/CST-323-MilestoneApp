@@ -20,5 +20,17 @@ namespace CST_323_MilestoneApp.Controllers
 
             return View(books);
         }
+
+        // GET: book/details/{id}
+        public async Task<IActionResult> Details(int id)
+        {
+            var book = await _bookDAO.GetBookById(id);
+            if (book == null)
+            {
+                
+                return NotFound(); // Handle the case where the book is not found
+            }
+            return View(book);
+        }
     }
 }
