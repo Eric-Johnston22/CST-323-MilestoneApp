@@ -1,0 +1,71 @@
+﻿@model CST_323_MilestoneApp.Models.User
+
+@{
+    ViewBag.Title = "User Profile";
+}
+
+<h2>@Model.Username's Profile</h2>
+
+<h3>Currently Reading</h3>
+<ul>
+    @if (Model.CurrentlyReading.Any())
+    {
+        @foreach (var entry in Model.CurrentlyReading)
+        {
+            <li>@entry.Book.Title</li>
+        }
+    }
+    else
+    {
+        <li>No books currently being read.</li>
+    }
+</ul>
+
+<h3>Have Read</h3>
+<ul>
+    @if (Model.ReadingHistory.Any())
+    {
+        @foreach (var entry in Model.ReadingHistory)
+        {
+            <li>@entry.Book.Title (Finished on: @entry.Finish_date)</li>
+        }
+    }
+    else
+    {
+        <li>No books in the "Have Read" list.</li>
+    }
+</ul>
+
+<h3>Want to Read</h3>
+<ul>
+    @if (Model.WantToRead.Any())
+    {
+        @foreach (var entry in Model.WantToRead)
+        {
+            <li>@entry.Book.Title</li>
+        }
+    }
+    else
+    {
+        <li>No books in the "Want to Read" list.</li>
+    }
+</ul>
+
+<h3>Reviews</h3>
+<ul>
+    @if (Model.Review.Any())
+    {
+        @foreach (var review in Model.Review)
+        {
+            <li>
+                <strong>@review.Book.Title:</strong> @review.Review_text
+                <br />
+                Rating: @review.Rating
+            </li>
+        }
+    }
+    else
+    {
+        <li>No reviews left.</li>
+    }
+</ul>

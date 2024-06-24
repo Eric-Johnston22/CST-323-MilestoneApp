@@ -24,7 +24,7 @@ namespace CST_323_MilestoneApp.Controllers
         // GET: book/details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            var book = await _bookDAO.GetBookById(id);
+            var book = await _bookDAO.GetBookByIdAsync(id);
             if (book == null)
             {
                 

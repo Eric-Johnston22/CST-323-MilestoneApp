@@ -10,6 +10,8 @@ namespace CST_323_MilestoneApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -18,10 +20,18 @@ namespace CST_323_MilestoneApp
 
             builder.Services.AddScoped<BookDAO>();
             builder.Services.AddScoped<AuthorDAO>();
+            builder.Services.AddScoped<UserDAO>();
 
             // Retrieve the connection string
             var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
             Console.WriteLine($"Connection String: {connectionString}");  // Debug output
+
+
+            builder.Services.AddDbContext<LibraryContext>(options =>
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                    .UseLoggerFactory(LibraryContext.MyLoggerFactory) // Use the logger factory
+                    .EnableSensitiveDataLogging() // Enable detailed logging
+            );
 
             // Add services to the container
             builder.Services.AddDbContext<LibraryContext>(options =>

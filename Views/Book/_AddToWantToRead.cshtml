@@ -1,0 +1,6 @@
+﻿@model int
+
+<form asp-action="AddToWantToRead" method="post">
+    <input type="hidden" name="bookId" value="@Model" />
+    <button type="submit" class="btn btn-primary">Add to Want to Read</button>
+</form>
