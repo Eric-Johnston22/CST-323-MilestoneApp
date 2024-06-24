@@ -1,5 +1,6 @@
 using CST_323_MilestoneApp.Controllers;
 using CST_323_MilestoneApp.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace CST_323_MilestoneApp
@@ -10,6 +11,11 @@ namespace CST_323_MilestoneApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -18,14 +24,30 @@ namespace CST_323_MilestoneApp
 
             builder.Services.AddScoped<BookDAO>();
             builder.Services.AddScoped<AuthorDAO>();
+            builder.Services.AddScoped<UserDAO>();
 
             // Retrieve the connection string
             var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
             Console.WriteLine($"Connection String: {connectionString}");  // Debug output
 
+
+            builder.Services.AddDbContext<LibraryContext>(options =>
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                    .UseLoggerFactory(LibraryContext.MyLoggerFactory) // Use the logger factory
+                    .EnableSensitiveDataLogging() // Enable detailed logging
+            );
+
             // Add services to the container
             builder.Services.AddDbContext<LibraryContext>(options =>
                 options.UseMySQL(connectionString));
+
+            // Add authentication services
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/User/Login";
+                    options.AccessDeniedPath = "/User/Login";
+                });
 
             var app = builder.Build();
 
@@ -42,6 +64,8 @@ namespace CST_323_MilestoneApp
 
             app.UseRouting();
 
+            // Add authentication and authorization middleware
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

@@ -1,0 +1,26 @@
+﻿@model List<CST_323_MilestoneApp.Models.Book>
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<h2>Search Results</h2>
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var book in Model)
+        {
+            <li>
+                <a asp-controller="Book" asp-action="Details" asp-route-id="@book.Book_id"> <strong>@book.Title</strong></a>
+                by  <a asp-controller="Author" asp-action="Details" asp-route-id="@book.Author_id"> @book.Author.Name<br /></a>
+                Genre: @book.Genre<br />
+                ISBN: @book.ISBN<br />
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No results found.</p>
+}

@@ -1,0 +1,105 @@
+﻿@model CST_323_MilestoneApp.Models.User
+
+@{
+    ViewBag.Title = "User Profile";
+}
+
+<div class="containter">
+    <div class="row">
+        <dic class="col" align="center">
+            <h2>@Model.Username's Profile</h2>
+        </dic>
+    </div>
+
+    <div class="row">
+
+        <div class="col">
+            <h3>Currently Reading</h3>
+            <ul>
+                @if (Model.CurrentlyReading.Any())
+                {
+                    @foreach (var entry in Model.CurrentlyReading)
+                    {
+                        <li>
+                            <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id"> @entry.Book.Title </a>
+                            @if (ViewBag.LoggedInUserId == Model.User_id)
+                            {
+                                <form asp-action="FinishReading" method="post" style="display:inline;">
+                                    <input type="hidden" name="bookId" value="@entry.Book_id" />
+                                    <button type="submit" class="btn btn-primary">Finish Reading</button>
+                                </form>
+                            }
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li>No books currently being read.</li>
+                }
+            </ul>
+        </div>
+        <div class="col">
+            <h3>Have Read</h3>
+            <ul>
+                @if (Model.ReadingHistory.Any())
+                {
+                    @foreach (var entry in Model.ReadingHistory)
+                    {
+                        <li>
+                            <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id"> @entry.Book.Title</a>
+                            (Finished on: @entry.Finish_date.ToShortDateString())
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li>No books in the "Have Read" list.</li>
+                }
+            </ul>
+        </div>
+
+        <div class="col">
+
+            <h3>Want to Read</h3>
+            <ul>
+                @if (Model.WantToRead.Any())
+                {
+                    @foreach (var entry in Model.WantToRead)
+                    {
+                        <li><a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id"> @entry.Book.Title</a></li>
+                    }
+                }
+                else
+                {
+                    <li>No books in the "Want to Read" list.</li>
+                }
+            </ul>
+
+        </div>
+
+    </div>
+    <div class="row" align="center">
+        <div class="col">
+            <h3>Reviews</h3>
+            <ul style="display: inline-block; text-align: left; list-style-position: inside;">
+                @if (Model.Review.Any())
+                {
+                    @foreach (var review in Model.Review)
+                    {
+                        <li style="text-align: left;">
+                            <a asp-controller="User" asp-action="ReviewDetails" asp-route-id="@review.Review_id"> <strong>@review.Book.Title:</strong></a>
+                            Rating: @review.Rating
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li>No reviews left.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+

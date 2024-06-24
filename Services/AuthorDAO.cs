@@ -23,7 +23,7 @@ namespace CST_323_MilestoneApp.Services
         {
             var author = await _context.Authors
                                            .Include(a => a.Books)
-                                           .FirstOrDefaultAsync(a => a.Author_Id == authorId);
+                                           .FirstOrDefaultAsync(a => a.Author_id == authorId);
             return author;
         }
     }

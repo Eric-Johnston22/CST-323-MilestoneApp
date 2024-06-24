@@ -1,0 +1,13 @@
+﻿@model CST_323_MilestoneApp.Models.Review
+
+@{
+    ViewBag.Title = "Review Details";
+}
+
+<h2>Review for @Model.Book.Title</h2>
+
+<p><strong>Rating:</strong> @Model.Rating</p>
+<p><strong>Review Date:</strong> @Model.Review_date.ToShortDateString()</p>
+<p><strong>Review:</strong> @Model.Review_text</p>
+
+<p><a asp-controller="User" asp-action="Profile" asp-route-id="@Model.User_id">Back to Profile</a></p>

@@ -3,9 +3,7 @@
 @{
     ViewBag.Title = "Authors";
 }
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -22,7 +20,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Author_Id">Details</a>
+                <a asp-action="Details" asp-route-id="@item.Author_id">Details</a>
             </td>
         </tr>
 }
