@@ -1,0 +1,6 @@
+﻿@model int
+
+<form asp-action="AddToHaveRead" method="post">
+    <input type="hidden" name="bookId" value="@Model" />
+    <button type="submit" class="btn btn-success">Add to Have Read</button>
+</form>

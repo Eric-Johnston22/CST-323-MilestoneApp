@@ -88,5 +88,61 @@ namespace CST_323_MilestoneApp.Services
                 throw;
             }
         }
+
+        public async Task AddToWantToReadAsync(int userId, int bookId)
+        {
+            var wantToRead = new WantToRead { User_id = userId, Book_id = bookId };
+            _context.WantToRead.Add(wantToRead);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddToCurrentlyReadingAsync(int userId, int bookId)
+        {
+            var currentlyReading = new CurrentlyReading { User_id = userId, Book_id = bookId, Start_date = DateTime.Now };
+            _context.CurrentlyReading.Add(currentlyReading);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddToHaveReadAsync(int userId, int bookId)
+        {
+            var readingHistory = new ReadingHistory { User_id = userId, Book_id = bookId, Start_date = DateTime.Now, Finish_date = DateTime.Now };
+            _context.ReadingHistory.Add(readingHistory);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task FinishReadingBookAsync(int userId, int bookId)
+        {
+            var currentlyReading = await _context.CurrentlyReading.FirstOrDefaultAsync(cr => cr.User_id == userId && cr.Book_id == bookId);
+            if (currentlyReading != null)
+            {
+                _context.CurrentlyReading.Remove(currentlyReading);
+
+                var readingHistory = new ReadingHistory
+                {
+                    User_id = userId,
+                    Book_id = bookId,
+                    Start_date = currentlyReading.Start_date,
+                    Finish_date = DateTime.Now
+                };
+                _context.ReadingHistory.Add(readingHistory);
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddReviewAsync(Review review)
+        {
+            _logger.LogInformation("Attempting to add review: {@Review}", review);
+
+            // Ensure that the User and Book objects are attached to the context
+            _context.Entry(review.User).State = EntityState.Unchanged;
+            _context.Entry(review.Book).State = EntityState.Unchanged;
+
+            _context.Reviews.Add(review);
+            _logger.LogInformation("Review added to context: {@Review}", review);
+
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Review saved to database");
+        }
     }
 }

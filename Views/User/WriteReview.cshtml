@@ -1,0 +1,29 @@
+﻿@model CST_323_MilestoneApp.Models.Review
+
+@{
+    ViewData["Title"] = "Write a Review";
+}
+
+<h2>Write a Review for @Model.Book.Title</h2>
+
+<form asp-action="WriteReview" method="post">
+    <div class="form-group">
+        <label asp-for="Rating" class="control-label"></label>
+        <select asp-for="Rating" class="form-control">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Review_text" class="control-label"></label>
+        <textarea asp-for="Review_text" class="form-control"></textarea>
+        <span asp-validation-for="Review_text" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Book_id" />
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+

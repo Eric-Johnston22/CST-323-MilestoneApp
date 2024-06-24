@@ -12,7 +12,13 @@
     {
         @foreach (var entry in Model.CurrentlyReading)
         {
-            <li>@entry.Book.Title</li>
+            <li>
+                @entry.Book.Title
+                <form asp-action="FinishReading" method="post" style="display:inline;">
+                    <input type="hidden" name="bookId" value="@entry.Book_id" />
+                    <button type="submit" class="btn btn-primary">Finish Reading</button>
+                </form>
+            </li>
         }
     }
     else

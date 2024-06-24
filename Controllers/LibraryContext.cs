@@ -18,7 +18,9 @@ namespace CST_323_MilestoneApp.Controllers
         public DbSet<Author> Authors { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Book> CurrentlyReading { get; set; }
+        public DbSet<CurrentlyReading> CurrentlyReading { get; set; }
+        public DbSet<WantToRead> WantToRead { get; set; }
+        public DbSet<ReadingHistory> ReadingHistory { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

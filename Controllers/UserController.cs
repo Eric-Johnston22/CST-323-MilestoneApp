@@ -1,17 +1,23 @@
 ﻿using CST_323_MilestoneApp.Models;
 using CST_323_MilestoneApp.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CST_323_MilestoneApp.Controllers
 {
     public class UserController : Controller
     {
         private readonly UserDAO _userDAO;
+        private readonly BookDAO _bookDAO;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(UserDAO userDAO, ILogger<UserController> logger)
+        public UserController(UserDAO userDAO, BookDAO bookDAO, ILogger<UserController> logger)
         {
             _userDAO = userDAO;
+            _bookDAO = bookDAO;
             _logger = logger;
         }
 
@@ -49,7 +55,7 @@ namespace CST_323_MilestoneApp.Controllers
                 if (result)
                 {
                     _logger.LogInformation("User registered successfully.");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login");
                 }
                 else
                 {
@@ -75,13 +81,30 @@ namespace CST_323_MilestoneApp.Controllers
 
             if (loggedInUser != null)
             {
-                // Redirect to the profile page
+                var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, loggedInUser.User_id.ToString()),
+                new Claim(ClaimTypes.Name, loggedInUser.Username)
+            };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
                 return RedirectToAction("Profile", new { id = loggedInUser.User_id });
             }
 
             ModelState.AddModelError("", "Invalid username or password");
             ViewBag.ErrorMessage = "Invalid username or password";
             return View(user);
+        }
+
+        // GET: User/Logout
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: User/Profile/{id}
@@ -96,6 +119,61 @@ namespace CST_323_MilestoneApp.Controllers
             }
 
             return View(user);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> FinishReading(int bookId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            await _userDAO.FinishReadingBookAsync(userId, bookId);
+            var book = await _bookDAO.GetBookByIdAsync(bookId);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            var review = new Review { Book_id = bookId, Book = book };
+            return View("WriteReview", review);
+        }
+
+        // GET: User/WriteReview/{bookId}
+        [Authorize]
+        public async Task<IActionResult> WriteReview(int bookId)
+        {
+            var book = await _bookDAO.GetBookByIdAsync(bookId);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            var review = new Review { Book_id = bookId, Book = book };
+            return View(review);
+        }
+
+        // POST: User/WriteReview
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> WriteReview(Review review)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                review.User_id = userId;
+                review.Review_date = DateTime.Now;
+
+                // Fetch the Book object to ensure it is correctly populated
+                review.Book = await _bookDAO.GetBookByIdAsync(review.Book_id);
+                review.User = await _userDAO.GetUserByIdAsync(userId);
+
+                _logger.LogInformation("Review model before saving: {@Review}", review);
+
+                await _userDAO.AddReviewAsync(review);
+
+                return RedirectToAction("Profile", new { id = userId });
+            }
+
+            // Populate the Book property before returning the view
+            review.Book = await _bookDAO.GetBookByIdAsync(review.Book_id);
+            return View(review);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace CST_323_MilestoneApp.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("Index action called.");
             return View();
         }
 
