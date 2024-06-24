@@ -13,12 +13,14 @@ namespace CST_323_MilestoneApp.Models
         public int User_id { get; set; }
 
         [ForeignKey("User_id")]
+        [NotMapped] // Ignore during validation
         public virtual User User { get; set; }
 
         [Column("book_id")]
         public int Book_id { get; set; }
 
         [ForeignKey("Book_id")]
+        [NotMapped] // Ignore during validation
         public virtual Book Book { get; set; }
 
         [Column("rating")]

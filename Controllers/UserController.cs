@@ -43,6 +43,12 @@ namespace CST_323_MilestoneApp.Controllers
                 return BadRequest("User object is null.");
             }
 
+            // Remove navigation properties from ModelState validation
+            ModelState.Remove(nameof(user.CurrentlyReading));
+            ModelState.Remove(nameof(user.ReadingHistory));
+            ModelState.Remove(nameof(user.WantToRead));
+            ModelState.Remove(nameof(user.Review));
+
             if (ModelState.IsValid)
             {
                 if (user.Password != user.ConfirmPassword)
@@ -118,6 +124,10 @@ namespace CST_323_MilestoneApp.Controllers
                 return NotFound(); // Handle the case where the user is not found
             }
 
+            // Pass the logged-in user's ID to the view
+            var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            ViewBag.LoggedInUserId = loggedInUserId;
+
             return View(user);
         }
 
@@ -154,6 +164,10 @@ namespace CST_323_MilestoneApp.Controllers
         [Authorize]
         public async Task<IActionResult> WriteReview(Review review)
         {
+            // Remove Book and User properties from ModelState validation
+            ModelState.Remove("Book");
+            ModelState.Remove("User");
+
             if (ModelState.IsValid)
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -173,6 +187,19 @@ namespace CST_323_MilestoneApp.Controllers
 
             // Populate the Book property before returning the view
             review.Book = await _bookDAO.GetBookByIdAsync(review.Book_id);
+            return View(review);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ReviewDetails(int id)
+        {
+            var review = await _userDAO.GetReviewById(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+
             return View(review);
         }
     }

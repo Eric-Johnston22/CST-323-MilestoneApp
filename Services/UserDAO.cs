@@ -144,5 +144,13 @@ namespace CST_323_MilestoneApp.Services
             await _context.SaveChangesAsync();
             _logger.LogInformation("Review saved to database");
         }
+
+        public async Task<Review?> GetReviewById(int reviewId)
+        {
+            return await _context.Reviews
+                .Include(r => r.Book)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Review_id == reviewId);
+        }
     }
 }

@@ -29,9 +29,13 @@ namespace CST_323_MilestoneApp.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
+        [NotMapped]
         public virtual ICollection<WantToRead> WantToRead { get; set; }
+        [NotMapped]
         public virtual ICollection<ReadingHistory> ReadingHistory { get; set; }
+        [NotMapped]
         public virtual ICollection<Review> Review { get; set; }
+        [NotMapped]
         public virtual ICollection<CurrentlyReading> CurrentlyReading { get; set; }
 
     }

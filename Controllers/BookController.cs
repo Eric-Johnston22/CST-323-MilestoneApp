@@ -9,18 +9,21 @@ namespace CST_323_MilestoneApp.Controllers
     {
         private readonly BookDAO _bookDAO;
         private readonly UserDAO _userDAO;
+        private readonly ILogger<BookController> _logger;
 
         // Constructor
-        public BookController(BookDAO bookDAO, UserDAO userDAO)
+        public BookController(BookDAO bookDAO, UserDAO userDAO, ILogger<BookController> logger)
         {
             _bookDAO = bookDAO;
             _userDAO = userDAO;
+            _logger = logger;
         }
 
         // GET: Books
         public async Task<IActionResult> Index()
         {
             var books = await _bookDAO.GetAllBooksAsync();
+            _logger.LogInformation("Index action called.");
 
             return View(books);
         }

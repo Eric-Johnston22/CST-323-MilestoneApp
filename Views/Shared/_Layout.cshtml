@@ -18,7 +18,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse justify-content-center">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -42,6 +42,9 @@
                             </li>
                         }
                     </ul>
+                    <form class="form-inline my-2 my-lg-0" asp-controller="Home" asp-action="Search" method="get" style="flex-grow: 1; max-width: 500px;">
+                        <input class="form-control w-100" type="search" name="query" placeholder="Search for books or authors" aria-label="Search">
+                    </form>
                     <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
