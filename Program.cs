@@ -15,13 +15,7 @@ namespace CST_323_MilestoneApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configure logging
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
-            builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
-
-            // Create a logger
+            // configure logging
             var logger = LoggerFactory.Create(logging =>
             {
                 logging.AddConsole();
@@ -37,43 +31,44 @@ namespace CST_323_MilestoneApp
             logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
 
 
-            if (environment.IsDevelopment())
-            {
-                // Add user secrets configuration for local development
-                builder.Configuration.AddUserSecrets<Program>();
-                logger.LogInformation("Using user secrets for local development.");
-            }
-            else
-            {
-                // Add Azure Key Vault configuration
-                var keyVaultName = builder.Configuration["KeyVaultName"];
-                if (!string.IsNullOrEmpty(keyVaultName))
-                {
-                    var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
-                    builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
-                    logger.LogInformation($"Added Azure Key Vault: {keyVaultUri}");
-                }
-                else
-                {
-                    logger.LogWarning("KeyVaultName is not set. Skipping Azure Key Vault configuration.");
-                }
-            }
+            //if (environment.IsDevelopment())
+            //{
+            //    // Add user secrets configuration for local development
+            //    builder.Configuration.AddUserSecrets<Program>();
+            //    logger.LogInformation("Using user secrets for local development.");
+            //}
+            //else
+            //{
+            //    // Add Azure Key Vault configuration
+            //    var keyVaultName = builder.Configuration["KeyVaultName"];
+            //    if (!string.IsNullOrEmpty(keyVaultName))
+            //    {
+            //        var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+            //        builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+            //        logger.LogInformation($"Added Azure Key Vault: {keyVaultUri}");
+            //    }
+            //    else
+            //    {
+            //        logger.LogWarning("KeyVaultName is not set. Skipping Azure Key Vault configuration.");
+            //    }
+            //}
 
 
             //Add Azure Key Vault configuration
-            //var keyVaultName = builder.Configuration["KeyVaultName"];
-            //var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
-            //Console.WriteLine($"Key Vault name: {keyVaultName}");
+            var keyVaultName = builder.Configuration["KeyVaultName"];
+            var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+            Console.WriteLine($"Key Vault name: {keyVaultName}");
 
-            //builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+            builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
 
             builder.Services.AddScoped<BookDAO>();
             builder.Services.AddScoped<AuthorDAO>();
             builder.Services.AddScoped<UserDAO>();
 
             // Retrieve the connection string
-            var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
-            Console.WriteLine($"Connection String: {connectionString}");  // Debug output
+            var connectionString = builder.Configuration["LibraryContext"];
+            //var connectionString = builder.Configuration["LibraryContext"];
+            logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string
 
 
             builder.Services.AddDbContext<LibraryContext>(options =>
