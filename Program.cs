@@ -18,6 +18,7 @@ namespace CST_323_MilestoneApp
             // configure logging
             var logger = LoggerFactory.Create(logging =>
             {
+                logging.ClearProviders();
                 logging.AddConsole();
                 logging.AddDebug();
                 logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
