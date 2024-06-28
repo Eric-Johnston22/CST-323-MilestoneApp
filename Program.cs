@@ -4,6 +4,7 @@ using CST_323_MilestoneApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace CST_323_MilestoneApp
@@ -14,11 +15,18 @@ namespace CST_323_MilestoneApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+            builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
+
             // Create a logger
             var logger = LoggerFactory.Create(logging =>
             {
                 logging.AddConsole();
                 logging.AddDebug();
+                logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
             }).CreateLogger<Program>();
 
             // Add services to the container.
