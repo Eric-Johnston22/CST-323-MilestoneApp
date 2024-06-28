@@ -34,6 +34,13 @@ namespace CST_323_MilestoneApp
                 builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
             }
 
+            //Add Azure Key Vault configuration
+            //var keyVaultName = builder.Configuration["KeyVaultName"];
+            //var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+            //Console.WriteLine($"Key Vault name: {keyVaultName}");
+
+            //builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+
             builder.Services.AddScoped<BookDAO>();
             builder.Services.AddScoped<AuthorDAO>();
             builder.Services.AddScoped<UserDAO>();
