@@ -67,7 +67,7 @@ namespace CST_323_MilestoneApp
             builder.Services.AddScoped<UserDAO>();
 
             // Retrieve the connection string
-            var connectionString = builder.Configuration["LibraryContext"];
+            var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
             //var connectionString = builder.Configuration["LibraryContext"];
             logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string
 
