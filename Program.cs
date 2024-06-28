@@ -1,3 +1,4 @@
+using Azure.Identity;
 using CST_323_MilestoneApp.Controllers;
 using CST_323_MilestoneApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -19,8 +20,19 @@ namespace CST_323_MilestoneApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            // Add user secrets configuration
-            builder.Configuration.AddUserSecrets<Program>();
+            // Add user secrets configuration for local development
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Configuration.AddUserSecrets<Program>();
+            }
+            else
+            {
+                // Add Azure Key Vault configuration
+                var keyVaultName = builder.Configuration["KeyVaultName"];
+                var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+
+                builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+            }
 
             builder.Services.AddScoped<BookDAO>();
             builder.Services.AddScoped<AuthorDAO>();
