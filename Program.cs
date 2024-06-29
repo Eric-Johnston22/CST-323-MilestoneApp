@@ -18,20 +18,27 @@ namespace CST_323_MilestoneApp
             //CreateHostBuilder(args).Build().Run();
 
             // configure logging
-            var logger = LoggerFactory.Create(logging =>
-            {
-                logging.ClearProviders();
-                logging.AddConsole();
-                logging.AddDebug();
-                //logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
-            }).CreateLogger<Program>();
+            //var logger = LoggerFactory.Create(logging =>
+            //{
+            //    logging.ClearProviders();
+            //    logging.AddConsole();
+            //    logging.AddDebug();
+            //    logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
+            //}).CreateLogger<Program>();
+
+            // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+            builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
+
+            //var logger = builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             var environment = builder.Environment;
-            // Log the current environment
-            logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
+
 
 
             //Add Azure Key Vault configuration
@@ -48,7 +55,7 @@ namespace CST_323_MilestoneApp
             // Retrieve the connection string
             //var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
             var connectionString = builder.Configuration["LibraryContext"];
-            logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string
+            
 
 
             builder.Services.AddDbContext<LibraryContext>(options =>
@@ -70,6 +77,12 @@ namespace CST_323_MilestoneApp
                 });
 
             var app = builder.Build();
+            var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+            // Log the current environment
+            logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
+
+            logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
