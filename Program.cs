@@ -2,6 +2,7 @@ using Azure.Identity;
 using CST_323_MilestoneApp.Controllers;
 using CST_323_MilestoneApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ namespace CST_323_MilestoneApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            CreateHostBuilder(args).Build().Run();
 
             // configure logging
             var logger = LoggerFactory.Create(logging =>
@@ -21,7 +23,7 @@ namespace CST_323_MilestoneApp
                 logging.ClearProviders();
                 logging.AddConsole();
                 logging.AddDebug();
-                logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
+                //logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
             }).CreateLogger<Program>();
 
             // Add services to the container.
@@ -30,29 +32,6 @@ namespace CST_323_MilestoneApp
             var environment = builder.Environment;
             // Log the current environment
             logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
-
-
-            //if (environment.IsDevelopment())
-            //{
-            //    // Add user secrets configuration for local development
-            //    builder.Configuration.AddUserSecrets<Program>();
-            //    logger.LogInformation("Using user secrets for local development.");
-            //}
-            //else
-            //{
-            //    // Add Azure Key Vault configuration
-            //    var keyVaultName = builder.Configuration["KeyVaultName"];
-            //    if (!string.IsNullOrEmpty(keyVaultName))
-            //    {
-            //        var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
-            //        builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
-            //        logger.LogInformation($"Added Azure Key Vault: {keyVaultUri}");
-            //    }
-            //    else
-            //    {
-            //        logger.LogWarning("KeyVaultName is not set. Skipping Azure Key Vault configuration.");
-            //    }
-            //}
 
 
             //Add Azure Key Vault configuration
@@ -115,5 +94,17 @@ namespace CST_323_MilestoneApp
 
             app.Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureLogging((context, logging) =>
+            {
+                logging.ClearProviders(); // Clear other logging providers
+                logging.AddAzureWebAppDiagnostics(); // Add Azure logging provider
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Program>();
+            });
     }
 }
