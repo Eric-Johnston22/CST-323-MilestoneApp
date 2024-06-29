@@ -15,7 +15,7 @@ namespace CST_323_MilestoneApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            CreateHostBuilder(args).Build().Run();
+            //CreateHostBuilder(args).Build().Run();
 
             // configure logging
             var logger = LoggerFactory.Create(logging =>
