@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.AzureAppServices;
 using System;
 
 namespace CST_323_MilestoneApp
@@ -31,6 +32,14 @@ namespace CST_323_MilestoneApp
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
             builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
+
+            // Ensure logging to Azure App Services
+            builder.Services.Configure<AzureFileLoggerOptions>(options =>
+            {
+                options.FileName = "azure-diagnostics-";
+                options.FileSizeLimit = 50 * 1024; // 50 MB
+                options.RetainedFileCountLimit = 5;
+            });
 
             //var logger = builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
 
