@@ -16,21 +16,9 @@ namespace CST_323_MilestoneApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            //CreateHostBuilder(args).Build().Run();
-
-            // configure logging
-            //var logger = LoggerFactory.Create(logging =>
-            //{
-            //    logging.ClearProviders();
-            //    logging.AddConsole();
-            //    logging.AddDebug();
-            //    logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
-            //}).CreateLogger<Program>();
+            
 
             // Configure logging
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
             builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
 
             // Ensure logging to Azure App Services
@@ -40,8 +28,10 @@ namespace CST_323_MilestoneApp
                 options.FileSizeLimit = 50 * 1024; // 50 MB
                 options.RetainedFileCountLimit = 5;
             });
-
-            //var logger = builder.Logging.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+            builder.Services.Configure<AzureBlobLoggerOptions>(options =>
+            {
+                options.BlobName = "log.txt";
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -116,17 +106,5 @@ namespace CST_323_MilestoneApp
 
             app.Run();
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureLogging((context, logging) =>
-            {
-                logging.ClearProviders(); // Clear other logging providers
-                logging.AddAzureWebAppDiagnostics(); // Add Azure logging provider
-            })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Program>();
-            });
     }
 }
