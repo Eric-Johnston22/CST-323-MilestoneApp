@@ -16,9 +16,12 @@ namespace CST_323_MilestoneApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
 
             // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
             builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
 
             // Ensure logging to Azure App Services

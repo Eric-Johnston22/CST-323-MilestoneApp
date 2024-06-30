@@ -19,6 +19,9 @@ namespace CST_323_MilestoneApp.Controllers
         public IActionResult Index()
         {
             _logger.LogInformation("Index action called.");
+            _logger.LogWarning("WARNING LOG TEST FROM HOME CONTROLLER");
+            _logger.LogError("ERROR LOG TEST FROM HOME CONTROLLER");
+            _logger.LogTrace("TRACE LOG TEST FROM HOME CONTROLLER");
             return View();
         }
 
