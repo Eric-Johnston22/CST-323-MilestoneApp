@@ -30,10 +30,6 @@ namespace CST_323_MilestoneApp
                 options.FileSizeLimit = 50 * 1024; // 50 MB
                 options.RetainedFileCountLimit = null;
             });
-            builder.Services.Configure<AzureBlobLoggerOptions>(options =>
-            {
-                options.BlobName = "log.txt";
-            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
