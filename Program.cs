@@ -26,7 +26,7 @@ namespace CST_323_MilestoneApp
             {
                 options.FileName = "azure-diagnostics-";
                 options.FileSizeLimit = 50 * 1024; // 50 MB
-                options.RetainedFileCountLimit = 5;
+                options.RetainedFileCountLimit = null;
             });
             builder.Services.Configure<AzureBlobLoggerOptions>(options =>
             {
