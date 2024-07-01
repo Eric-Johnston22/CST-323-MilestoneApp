@@ -37,6 +37,7 @@ namespace CST_323_MilestoneApp.Controllers
                 
                 return NotFound(); // Handle the case where the book is not found
             }
+            _logger.LogInformation($"Getting details for book id: {id}");
             return View(book);
         }
 
@@ -47,6 +48,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _userDAO.AddToWantToReadAsync(userId, bookId);
+            TempData["SuccessMessage"] = $"Book added successfully to Want to Read list.";
             return RedirectToAction("Details", new { id = bookId });
         }
 
@@ -56,6 +58,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
+            TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";
             return RedirectToAction("Details", new { id = bookId });
         }
 
@@ -65,6 +68,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _userDAO.AddToHaveReadAsync(userId, bookId);
+            TempData["SuccessMessage"] = $"Book added successfully to Have Read list.";
             return RedirectToAction("Details", new { id = bookId });
         }
     }

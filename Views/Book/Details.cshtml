@@ -58,5 +58,21 @@
     {
         <p>Please <a href="@Url.Action("Login", "User")">login</a> to add this book to your lists.</p>
     }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert" id="success-message">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function() 
+    { 
+        setTimeout(function () {
+            $('#success-message').fadeOut('slow');
+        }, 6000);   // 6 second fadeout
+    })
+</script>
