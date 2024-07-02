@@ -37,6 +37,7 @@ namespace CST_323_MilestoneApp.Controllers
                 
                 return NotFound(); // Handle the case where the book is not found
             }
+            _logger.LogInformation($"Getting details for book id: {id}");
             return View(book);
         }
 
@@ -47,7 +48,9 @@ namespace CST_323_MilestoneApp.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _userDAO.AddToWantToReadAsync(userId, bookId);
-            return RedirectToAction("Details", new { id = bookId });
+            TempData["SuccessMessage"] = $"Book added successfully to Want to Read list.";
+            //return RedirectToAction("Details", new { id = bookId });
+            return NoContent();
         }
 
         [HttpPost]
@@ -55,8 +58,21 @@ namespace CST_323_MilestoneApp.Controllers
         public async Task<IActionResult> AddToCurrentlyReading(int bookId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
-            return RedirectToAction("Details", new { id = bookId });
+            bool alreadyReading = await _userDAO.IsBookInCurrentlyReadingAsync(userId, bookId);
+            var book = _bookDAO.GetBookByIdAsync(bookId);
+
+            if (alreadyReading)
+            {
+                //TempData["ErrorMessage"] = $"You are already reading {book.Result.Title}!";
+                return Json(new { success = false, message = $"{book.Result.Title} is already in your Currently Reading list." });
+            }
+            else
+            {
+                await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
+                //TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";
+                return Json(new { success = true, message = $"{book.Result.Title} added to your Currently Reading list." });
+            }
+            //return RedirectToAction("Details", new { id = bookId });
         }
 
         [HttpPost]
@@ -65,6 +81,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _userDAO.AddToHaveReadAsync(userId, bookId);
+            TempData["SuccessMessage"] = $"Book added successfully to Have Read list.";
             return RedirectToAction("Details", new { id = bookId });
         }
     }

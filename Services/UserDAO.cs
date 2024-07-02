@@ -103,6 +103,13 @@ namespace CST_323_MilestoneApp.Services
             await _context.SaveChangesAsync();
         }
 
+        // Check to see if user is already reading the book
+        public async Task<bool> IsBookInCurrentlyReadingAsync(int userId, int bookId)
+        {
+            return await _context.CurrentlyReading
+                .AnyAsync(cr => cr.Book_id == bookId && cr.User_id == userId);
+        }
+
         public async Task AddToHaveReadAsync(int userId, int bookId)
         {
             var readingHistory = new ReadingHistory { User_id = userId, Book_id = bookId, Start_date = DateTime.Now, Finish_date = DateTime.Now };
