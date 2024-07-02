@@ -58,9 +58,15 @@
     {
         <p>Please <a href="@Url.Action("Login", "User")">login</a> to add this book to your lists.</p>
     }
-    @if (TempData["SuccessMessage"] != null)
+    @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-success" role="alert" id="success-message">
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    else if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
             @TempData["SuccessMessage"]
         </div>
     }
@@ -72,7 +78,7 @@
     $(document).ready(function() 
     { 
         setTimeout(function () {
-            $('#success-message').fadeOut('slow');
+            $('.alert').fadeOut('slow');
         }, 6000);   // 6 second fadeout
     })
 </script>

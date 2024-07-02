@@ -57,8 +57,18 @@ namespace CST_323_MilestoneApp.Controllers
         public async Task<IActionResult> AddToCurrentlyReading(int bookId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
-            TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";
+            bool alreadyReding = await _userDAO.IsBookInCurrentlyReadingAsync(userId, bookId);
+
+            if (alreadyReding)
+            {
+                var book = _bookDAO.GetBookByIdAsync(bookId);
+                TempData["ErrorMessage"] = $"You are already reading {book.Result.Title}!";
+            }
+            else
+            {
+                await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
+                TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";
+            }
             return RedirectToAction("Details", new { id = bookId });
         }
 

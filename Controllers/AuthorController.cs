@@ -31,7 +31,7 @@ namespace CST_323_MilestoneApp.Controllers
         }
 
         // GET: Author/Details/{id}
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -39,7 +39,7 @@ namespace CST_323_MilestoneApp.Controllers
                 return NotFound();
             }
 
-            var author = await _authorDAO.GetAuthorById(id);
+            var author = await _authorDAO.GetAuthorById(Convert.ToInt32(id));
 
             _logger.LogInformation("Author details retrieved correctly");
             return View(author);
