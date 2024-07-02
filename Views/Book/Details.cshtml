@@ -58,7 +58,7 @@
     {
         <p>Please <a href="@Url.Action("Login", "User")">login</a> to add this book to your lists.</p>
     }
-    @if (TempData["ErrorMessage"] != null)
+    @* @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger" role="alert">
             @TempData["ErrorMessage"]
@@ -69,16 +69,48 @@
         <div class="alert alert-success" role="alert">
             @TempData["SuccessMessage"]
         </div>
-    }
+    } *@
+
+    <div id="message-container"></div>
+
     <a asp-action="Index">Back to List</a>
 </div>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
-    $(document).ready(function() 
-    { 
-        setTimeout(function () {
-            $('.alert').fadeOut('slow');
-        }, 6000);   // 6 second fadeout
-    })
+    // $(document).ready(function () {
+    //     setTimeout(function () {
+    //         $('.alert').fadeOut('slow');
+    //     }, 6000);   // 6 second fadeout
+    // });
+
+    // AJAX attempt
+    $(document).ready(function () {
+        $('#currentlyReadingForm').submit(function (event) {
+            event.preventDefault();
+            var bookId = $(this).data('book-id');
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToCurrentlyReading", "Book")',
+                data: { bookId: bookId },
+                success: function (response) {
+                    var messageContainer = $('#message-container');
+                    messageContainer.html('');
+
+                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
+                    messageContainer.append(messageHtml);
+
+                    setTimeout(function () {
+                        messageContainer.children().fadeOut('slow', function () {
+                            $(this).remove();
+                        });
+                    }, 6000); // 5000 milliseconds = 5 seconds
+                },
+                error: function () {
+                    alert('Error adding book to Currently Reading list.');
+                }
+            });
+        });
+    });
 </script>

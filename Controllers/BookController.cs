@@ -49,7 +49,8 @@ namespace CST_323_MilestoneApp.Controllers
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _userDAO.AddToWantToReadAsync(userId, bookId);
             TempData["SuccessMessage"] = $"Book added successfully to Want to Read list.";
-            return RedirectToAction("Details", new { id = bookId });
+            //return RedirectToAction("Details", new { id = bookId });
+            return NoContent();
         }
 
         [HttpPost]
@@ -57,19 +58,21 @@ namespace CST_323_MilestoneApp.Controllers
         public async Task<IActionResult> AddToCurrentlyReading(int bookId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            bool alreadyReding = await _userDAO.IsBookInCurrentlyReadingAsync(userId, bookId);
+            bool alreadyReading = await _userDAO.IsBookInCurrentlyReadingAsync(userId, bookId);
+            var book = _bookDAO.GetBookByIdAsync(bookId);
 
-            if (alreadyReding)
+            if (alreadyReading)
             {
-                var book = _bookDAO.GetBookByIdAsync(bookId);
-                TempData["ErrorMessage"] = $"You are already reading {book.Result.Title}!";
+                //TempData["ErrorMessage"] = $"You are already reading {book.Result.Title}!";
+                return Json(new { success = false, message = $"{book.Result.Title} is already in your Currently Reading list." });
             }
             else
             {
                 await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
-                TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";
+                //TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";
+                return Json(new { success = true, message = $"{book.Result.Title} added to your Currently Reading list." });
             }
-            return RedirectToAction("Details", new { id = bookId });
+            //return RedirectToAction("Details", new { id = bookId });
         }
 
         [HttpPost]
