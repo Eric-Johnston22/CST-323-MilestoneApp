@@ -2,6 +2,8 @@ using CST_323_MilestoneApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Serilog.Context;
+using CST_323_MilestoneApp.Utilities;
 
 namespace CST_323_MilestoneApp.Controllers
 {
@@ -18,11 +20,11 @@ namespace CST_323_MilestoneApp.Controllers
 
         public IActionResult Index()
         {
-            _logger.LogInformation("Index action called.");
-            _logger.LogWarning("WARNING LOG TEST FROM HOME CONTROLLER");
-            _logger.LogError("ERROR LOG TEST FROM HOME CONTROLLER");
-            _logger.LogTrace("TRACE LOG TEST FROM HOME CONTROLLER");
-            return View();
+            using (_logger.LogMethodEntry())
+            {
+                return View();
+            }
+
         }
 
         public IActionResult Privacy()
@@ -39,17 +41,21 @@ namespace CST_323_MilestoneApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string query)
         {
-            if (string.IsNullOrEmpty(query))
+            using (_logger.LogMethodEntry(nameof(Search), query))
             {
-                return View("SearchResults", new List<Book>());
+                if (string.IsNullOrEmpty(query))
+                {
+                    _logger.LogInformation("Search Query is empty or null");
+                    return View("SearchResults", new List<Book>());
+                }
+
+                var books = await _context.Books
+                    .Include(b => b.Author)
+                    .Where(b => b.Title.Contains(query) || b.Genre.Contains(query) || b.ISBN.Contains(query) || b.Author.Name.Contains(query))
+                    .ToListAsync();
+                _logger.LogInformation("Retrieved all entries with {query}", query);
+                return View("SearchResults", books);
             }
-
-            var books = await _context.Books
-                .Include(b => b.Author)
-                .Where(b => b.Title.Contains(query) || b.Genre.Contains(query) || b.ISBN.Contains(query) || b.Author.Name.Contains(query))
-                .ToListAsync();
-
-            return View("SearchResults", books);
         }
     }
 }

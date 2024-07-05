@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.AzureAppServices;
+using Serilog;
 using System;
 
 namespace CST_323_MilestoneApp
@@ -17,10 +18,25 @@ namespace CST_323_MilestoneApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Read configuration from appsettings.json
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             // Configure logging
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .Enrich.FromLogContext()
+                //.WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext}.{MemberName}() - {Message:lj}{NewLine}{Exception}")
+                .WriteTo.AzureApp(outputTemplate: "{MemberName}() - {Message:lj}{NewLine}{Exception}")
+                .WriteTo.File(@"C\home\LogFiles\Application\diagnostics-{Date}.txt", rollingInterval: RollingInterval.Day,
+                              outputTemplate: "{MemberName}() - {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+            // Configure logging
+            //builder.Logging.AddConsole();
+            //builder.Logging.AddDebug();
             builder.Logging.AddAzureWebAppDiagnostics(); // Add Azure Web App logging
 
             // Ensure logging to Azure App Services
@@ -74,12 +90,11 @@ namespace CST_323_MilestoneApp
                 });
 
             var app = builder.Build();
-            var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
+            //var logger = app.Services.GetRequiredService<ILogger<Program>>();
+            Log.Information("Test Log from Program.cs");
             // Log the current environment
-            logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
-
-            logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string
+            //logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
+            //logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

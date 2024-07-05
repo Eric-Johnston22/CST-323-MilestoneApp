@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CST_323_MilestoneApp.Models;
 using CST_323_MilestoneApp.Services;
+using CST_323_MilestoneApp.Utilities;
 
 namespace CST_323_MilestoneApp.Controllers
 {
@@ -22,27 +23,33 @@ namespace CST_323_MilestoneApp.Controllers
             _logger = logger;
         }
 
-        // GET: Author
+        // GET: /Author
         public async Task<IActionResult> Index()
         {
-            var authors = await _authorDAO.GetAllAuthorsAsync();
+            using (_logger.LogMethodEntry())
+            {
+                _logger.LogInformation("Retrieving authors from database");
+         
+                var authors = await _authorDAO.GetAllAuthorsAsync(); // call DAO
 
-            return View(authors);
+                return View(authors);
+            }
         }
 
-        // GET: Author/Details/{id}
+        // GET: /Author/Details/{id}
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            using (_logger.LogMethodEntry(nameof(Details), id))
             {
-                _logger.LogError("Author not found, ID is null");
-                return NotFound();
+                if (id == null)
+                {
+                    _logger.LogWarning("Author not found, ID is null");
+                    return NotFound();
+                }
+
+                var author = await _authorDAO.GetAuthorById(Convert.ToInt32(id)); // call DAO
+                return View(author);
             }
-
-            var author = await _authorDAO.GetAuthorById(Convert.ToInt32(id));
-
-            _logger.LogInformation("Author details retrieved correctly");
-            return View(author);
         }
 
     }
