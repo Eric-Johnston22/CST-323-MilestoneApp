@@ -28,9 +28,9 @@ namespace CST_323_MilestoneApp
                 .ReadFrom.Configuration(configuration)
                 .Enrich.FromLogContext()
                 //.WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext}.{MemberName}() - {Message:lj}{NewLine}{Exception}")
-                .WriteTo.AzureApp(outputTemplate: "{MemberName}() - {Message:lj}{NewLine}{Exception}")
+                //.WriteTo.AzureApp(outputTemplate: "{SourceContext}.{MemberName}() - {Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(@"C\home\LogFiles\Application\diagnostics-{Date}.txt", rollingInterval: RollingInterval.Day,
-                              outputTemplate: "{MemberName}() - {Message:lj}{NewLine}{Exception}")
+                              outputTemplate: "{SourceContext}.{MemberName}() - {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             builder.Host.UseSerilog();
