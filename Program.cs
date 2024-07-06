@@ -1,6 +1,8 @@
 using Azure.Identity;
 using CST_323_MilestoneApp.Controllers;
 using CST_323_MilestoneApp.Services;
+using CST_323_MilestoneApp.Utilities;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +33,11 @@ namespace CST_323_MilestoneApp
                 //.WriteTo.AzureApp(outputTemplate: "{SourceContext}.{MemberName}() - {Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(@"C\home\LogFiles\Application\diagnostics-{Date}.txt", rollingInterval: RollingInterval.Day,
                               outputTemplate: "{SourceContext}.{MemberName}() - {Message:lj}{NewLine}{Exception}")
+                .WriteTo.ApplicationInsights(new TelemetryConfiguration { InstrumentationKey = "d0d31b01-21fd-45ce-88c3-7dfc8b779603" }, new TemplateTraceTelemetryConverter()) // Add custom trace telemetry converter for custom message template
                 .CreateLogger();
 
             builder.Host.UseSerilog();
+            
             // Configure logging
             //builder.Logging.AddConsole();
             //builder.Logging.AddDebug();
