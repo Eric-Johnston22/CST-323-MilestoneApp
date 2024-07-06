@@ -25,7 +25,7 @@ namespace CST_323_MilestoneApp.Services
                 try
                 {
                     var books = await _context.Books.Include(b => b.Author).ToListAsync();
-                    _logger.LogInformation("Query returned {count} books", books.Count);
+                    _logger.LogInformationWithContext($"Query returned {books.Count} books");
                     return books;
                 }
                 catch (Exception ex)
@@ -47,11 +47,11 @@ namespace CST_323_MilestoneApp.Services
                                          .FirstOrDefaultAsync(b => b.Book_id == bookId);
                 if (book == null)
                 {
-                    _logger.LogWarning("Book with id: {Id} not found", bookId);
+                    _logger.LogWarningWithContext($"Book with id: {bookId} not found");
                 }
                 else
                 {
-                    _logger.LogInformation("Query returned book with id: {id}", bookId);
+                    _logger.LogInformationWithContext($"Query returned book with id: {bookId}");
                 }
                 return book;
             }   

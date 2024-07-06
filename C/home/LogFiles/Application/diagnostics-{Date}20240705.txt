@@ -1279,3 +1279,32 @@ Logout() - Entering method: Logout() with parameters:
 Logout() - Exiting method: Logout. Duration: 0ms
 Index() - Entering method: Index() with parameters: 
 Index() - Exiting method: Index. Duration: 0ms
+.() - Test Log from Program.cs
+CST_323_MilestoneApp.Controllers.HomeController.Index() - Entering method: Index() with parameters: 
+CST_323_MilestoneApp.Controllers.HomeController.Index() - Exiting method: Index. Duration: 0ms
+CST_323_MilestoneApp.Controllers.HomeController.Index() - Entering method: Index() with parameters: 
+CST_323_MilestoneApp.Controllers.HomeController.Index() - Exiting method: Index. Duration: 0ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Entering method: Index() with parameters: 
+CST_323_MilestoneApp.Controllers.BookController.() - Retrieving books from database
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Entering method: GetAllBooksAsync() with parameters: 
+CST_323_MilestoneApp.Services.BookDAO.() - Query returned 20 books
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Exiting method: GetAllBooksAsync. Duration: 1070ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Exiting method: Index. Duration: 1072ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Entering method: Index() with parameters: 
+CST_323_MilestoneApp.Controllers.BookController.Index() - Retrieving books from database
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Entering method: GetAllBooksAsync() with parameters: 
+CST_323_MilestoneApp.Services.BookDAO.() - Query returned 20 books
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Exiting method: GetAllBooksAsync. Duration: 73ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Exiting method: Index. Duration: 74ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Entering method: Index() with parameters: 
+CST_323_MilestoneApp.Controllers.BookController.Index() - Retrieving books from database
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Entering method: GetAllBooksAsync() with parameters: 
+CST_323_MilestoneApp.Services.BookDAO.() - Query returned 20 books
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Exiting method: GetAllBooksAsync. Duration: 97ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Exiting method: Index. Duration: 97ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Entering method: Index() with parameters: 
+CST_323_MilestoneApp.Controllers.BookController.Index() - Retrieving books from database
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Entering method: GetAllBooksAsync() with parameters: 
+CST_323_MilestoneApp.Services.BookDAO.() - Query returned 20 books
+CST_323_MilestoneApp.Services.BookDAO.GetAllBooksAsync() - Exiting method: GetAllBooksAsync. Duration: 57ms
+CST_323_MilestoneApp.Controllers.BookController.Index() - Exiting method: Index. Duration: 57ms

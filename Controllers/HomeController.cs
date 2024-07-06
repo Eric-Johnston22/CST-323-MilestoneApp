@@ -45,7 +45,7 @@ namespace CST_323_MilestoneApp.Controllers
             {
                 if (string.IsNullOrEmpty(query))
                 {
-                    _logger.LogInformation("Search Query is empty or null");
+                    _logger.LogInformationWithContext("Search Query is empty or null");
                     return View("SearchResults", new List<Book>());
                 }
 
@@ -53,7 +53,7 @@ namespace CST_323_MilestoneApp.Controllers
                     .Include(b => b.Author)
                     .Where(b => b.Title.Contains(query) || b.Genre.Contains(query) || b.ISBN.Contains(query) || b.Author.Name.Contains(query))
                     .ToListAsync();
-                _logger.LogInformation("Retrieved all entries with {query}", query);
+                _logger.LogInformationWithContext($"Retrieved all entries with {query}");
                 return View("SearchResults", books);
             }
         }

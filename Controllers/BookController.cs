@@ -25,7 +25,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry())
             {
-                _logger.LogInformation("Retrieving books from database");
+                _logger.LogInformationWithContext("Retrieving all books from database");
                 var books = await _bookDAO.GetAllBooksAsync();
 
                 return View(books);
@@ -39,7 +39,7 @@ namespace CST_323_MilestoneApp.Controllers
             {
                 if (id == null)
                 {
-                    _logger.LogWarning("Book not found, ID is null");
+                    _logger.LogWarningWithContext("Book not found, ID is null");
                     return NotFound(); // Handle the case where the book is not found
                 }
 
@@ -68,20 +68,20 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry(nameof(AddToCurrentlyReading), bookId))
             {
-                _logger.LogInformation("Checking if book {id} is already in 'CurrentlyReading' list", bookId);
+                _logger.LogInformationWithContext($"Checking if book {bookId} is already in 'CurrentlyReading' list");
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 bool alreadyReading = await _userDAO.IsBookInCurrentlyReadingAsync(userId, bookId);
 
                 if (alreadyReading)
                 {
-                    _logger.LogWarning("User {@UserId} is currently reading {@bookId}", userId, bookId);
+                    _logger.LogWarningWithContext($"User {@userId} is currently reading {@bookId}");
                     var book = _bookDAO.GetBookByIdAsync(bookId);
                     //TempData["ErrorMessage"] = $"You are already reading {book.Result.Title}!";
                     return Json(new { success = false, message = $"{book.Result.Title} is already on your CurrentlyReading list." });
                 }
                 else
                 {
-                    _logger.LogInformation("User {@UserId} is NOT currently reading {@bookId}", userId, bookId);
+                    _logger.LogInformationWithContext($"User {@userId} is NOT currently reading {@bookId}");
                     await _userDAO.AddToCurrentlyReadingAsync(userId, bookId);
                     var book = _bookDAO.GetBookByIdAsync(bookId);
                     //TempData["SuccessMessage"] = $"Book added successfully to Currently Reading list.";

@@ -26,7 +26,7 @@ namespace CST_323_MilestoneApp.Services
                     var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
                     if (existingUser != null)
                     {
-                        _logger.LogWarning("Username already exists.");
+                        _logger.LogWarningWithContext("Username already exists.");
                         return false;
                     }
 
@@ -35,7 +35,7 @@ namespace CST_323_MilestoneApp.Services
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("Saving user {id} to database", user.User_id);
+                    _logger.LogInformationWithContext($"Saving user {user.User_id} to database");
                     return true;
                 }
                 catch (Exception ex)
@@ -56,11 +56,11 @@ namespace CST_323_MilestoneApp.Services
                                              .FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
                     if (user == null)
                     {
-                        _logger.LogWarning("Invalid username or password.");
+                        _logger.LogWarningWithContext("Invalid username or password.");
                         return user;
                     }
 
-                    _logger.LogInformation("User retrieved from database");
+                    _logger.LogInformationWithContext("User retrieved from database");
                     return user;
                 }
                 catch (Exception ex)
@@ -89,10 +89,10 @@ namespace CST_323_MilestoneApp.Services
                                              .FirstOrDefaultAsync(u => u.User_id == userId);
                     if (user == null)
                     {
-                        _logger.LogWarning("User with ID {userId} not found.", userId);
+                        _logger.LogWarningWithContext($"User with ID {userId} not found.");
                     }
 
-                    _logger.LogInformation("User {userid} retrieved from database", userId);
+                    _logger.LogInformationWithContext($"User {userId} retrieved from database");
                     return user;
                 }
                 catch (Exception ex)
@@ -110,7 +110,7 @@ namespace CST_323_MilestoneApp.Services
                 var wantToRead = new WantToRead { User_id = userId, Book_id = bookId };
                 _context.WantToRead.Add(wantToRead);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Saving book {id} to user {id}'s WantToRead list", bookId, userId);
+                _logger.LogInformationWithContext($"Saving book {bookId} to user {userId}'s WantToRead list");
             }
         }
 
@@ -121,7 +121,7 @@ namespace CST_323_MilestoneApp.Services
                 var currentlyReading = new CurrentlyReading { User_id = userId, Book_id = bookId, Start_date = DateTime.Now };
                 _context.CurrentlyReading.Add(currentlyReading);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Saving book {id} to user {id}'s CurrentlyReading list", bookId, userId);
+                _logger.LogInformationWithContext($"Saving book {bookId} to user {userId}'s CurrentlyReading list");
             }
         }
 
@@ -141,7 +141,7 @@ namespace CST_323_MilestoneApp.Services
                 var readingHistory = new ReadingHistory { User_id = userId, Book_id = bookId, Start_date = DateTime.Now, Finish_date = DateTime.Now };
                 _context.ReadingHistory.Add(readingHistory);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Saving book {id} to user {id}'s 'HaveRead' list", bookId, userId);
+                _logger.LogInformationWithContext($"Saving book {bookId} to user {userId}'s 'HaveRead' list");
             }
         }
 
@@ -152,7 +152,7 @@ namespace CST_323_MilestoneApp.Services
                 var currentlyReading = await _context.CurrentlyReading.FirstOrDefaultAsync(cr => cr.User_id == userId && cr.Book_id == bookId);
                 if (currentlyReading != null)
                 {
-                    _logger.LogInformation("Removing book {id} from user {id}'s 'CurrentlyReading' list", bookId, userId);
+                    _logger.LogInformationWithContext($"Removing book {bookId} from user {userId}'s 'CurrentlyReading' list");
                     _context.CurrentlyReading.Remove(currentlyReading);
 
                     var readingHistory = new ReadingHistory
@@ -164,7 +164,7 @@ namespace CST_323_MilestoneApp.Services
                     };
                     _context.ReadingHistory.Add(readingHistory);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("Saving book {id} to user {id}'s Reading History", bookId, userId);
+                    _logger.LogInformationWithContext($"Saving book {bookId} to user {userId}'s Reading History");
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace CST_323_MilestoneApp.Services
         {
             using (_logger.LogMethodEntry(nameof(AddReviewAsync), review))
             {
-                _logger.LogInformation("Attempting to add review: {@Review}", review);
+                _logger.LogInformationWithContext($"Attempting to add review: {review.Review_id}");
 
                 // Ensure that the User and Book objects are attached to the context
                 _context.Entry(review.User).State = EntityState.Unchanged;
@@ -182,7 +182,7 @@ namespace CST_323_MilestoneApp.Services
                 _context.Reviews.Add(review);
 
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Review {id} saved to database", review.Review_id);
+                _logger.LogInformationWithContext($"Review {review.Review_id} saved to database");
             }
         }
 
@@ -190,7 +190,7 @@ namespace CST_323_MilestoneApp.Services
         {
             using (_logger.LogMethodEntry(nameof(GetReviewById), reviewId))
             {
-                _logger.LogInformation("Retrieving review {id} from database", reviewId);
+                _logger.LogInformationWithContext($"Retrieving review {reviewId} from database");
                 var review = await _context.Reviews
                     .Include(r => r.Book)
                     .Include(r => r.User)

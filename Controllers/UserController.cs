@@ -65,7 +65,7 @@ namespace CST_323_MilestoneApp.Controllers
                 {
                     if (user.Password != user.ConfirmPassword)
                     {
-                        _logger.LogWarning("Password and confirmation password do not match");
+                        _logger.LogWarningWithContext("Password and confirmation password do not match");
                         ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
                         return View(user);
                     }
@@ -73,12 +73,12 @@ namespace CST_323_MilestoneApp.Controllers
                     var result = await _userDAO.RegisterUserAsync(user);
                     if (result)
                     {
-                        _logger.LogInformation("User registered successfully.");
+                        _logger.LogInformationWithContext("User registered successfully.");
                         return RedirectToAction("Login");
                     }
                     else
                     {
-                        _logger.LogWarning("User registration failed.");
+                        _logger.LogWarningWithContext("User registration failed.");
                         ModelState.AddModelError(string.Empty, "User registration failed.");
                     }
                 }
@@ -116,7 +116,7 @@ namespace CST_323_MilestoneApp.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    _logger.LogInformation("User logged in succesfully");
+                    _logger.LogInformationWithContext("User logged in succesfully");
                     return RedirectToAction("Profile", new { id = loggedInUser.User_id });
                 }
 
@@ -133,7 +133,7 @@ namespace CST_323_MilestoneApp.Controllers
             using (_logger.LogMethodEntry())
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                _logger.LogInformation("User {id} logging out", userId);
+                _logger.LogInformationWithContext($"User {userId} logging out");
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return RedirectToAction("Index", "Home");
             }
@@ -174,7 +174,7 @@ namespace CST_323_MilestoneApp.Controllers
                     _logger.LogError($"Book not found by ID: {bookId}");
                     return NotFound();
                 }
-                _logger.LogInformation($"Book added to Finished Reading List: {bookId}");
+                _logger.LogInformationWithContext($"Book added to Finished Reading List: {bookId}");
                 var review = new Review { Book_id = bookId, Book = book };
                 return View("WriteReview", review);
             }
@@ -189,11 +189,11 @@ namespace CST_323_MilestoneApp.Controllers
                 var book = await _bookDAO.GetBookByIdAsync(bookId);
                 if (book == null)
                 {
-                    _logger.LogError($"Book not found by ID: {bookId}");
+                    _logger.LogWarningWithContext($"Book not found by ID: {bookId}");
                     return NotFound();
                 }
                 var review = new Review { Book_id = bookId, Book = book };
-                _logger.LogInformation($"Retrived review {review.Review_id} for book {bookId} from database");
+                _logger.LogInformationWithContext($"Retrived review {review.Review_id} for book {bookId} from database");
                 return View(review);
             }
         }
@@ -219,7 +219,7 @@ namespace CST_323_MilestoneApp.Controllers
                     review.Book = await _bookDAO.GetBookByIdAsync(review.Book_id);
                     review.User = await _userDAO.GetUserByIdAsync(userId);
 
-                    _logger.LogInformation($"Saving Review: {review.Review_id} to database");
+                    _logger.LogInformationWithContext($"Saving Review: {review.Review_id} to database");
 
                     await _userDAO.AddReviewAsync(review);
 
@@ -238,7 +238,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry(nameof(ReviewDetails), id))
             {
-                _logger.LogInformation($"Retrieved review {id} from database");
+                _logger.LogInformationWithContext($"Retrieved review {id} from database");
                 var review = await _userDAO.GetReviewById(id);
                 if (review == null)
                 {

@@ -24,7 +24,7 @@ namespace CST_323_MilestoneApp.Services
             {
                 {
                     var authors = await _context.Authors.ToListAsync();
-                    _logger.LogInformation("Query returned {count} authors", authors.Count);
+                    _logger.LogInformationWithContext($"Query returned {authors.Count} authors");
                     return authors;
                 }
             }
@@ -40,11 +40,11 @@ namespace CST_323_MilestoneApp.Services
 
                 if (author != null)
                 {
-                    _logger.LogInformation("Query returned author with id: {Id}", authorId);
+                    _logger.LogInformationWithContext($"Query returned author with id: {authorId}");
                 }
                 else
                 {
-                    _logger.LogWarning("Author with id: {Id} not found", authorId);
+                    _logger.LogWarningWithContext($"Author with id: {authorId} not found");
                 }
                 return author;
 

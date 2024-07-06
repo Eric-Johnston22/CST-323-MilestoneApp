@@ -28,7 +28,7 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry())
             {
-                _logger.LogInformation("Retrieving authors from database");
+                _logger.LogInformationWithContext("Retrieving authors from database");
          
                 var authors = await _authorDAO.GetAllAuthorsAsync(); // call DAO
 
@@ -43,7 +43,7 @@ namespace CST_323_MilestoneApp.Controllers
             {
                 if (id == null)
                 {
-                    _logger.LogWarning("Author not found, ID is null");
+                    _logger.LogWarningWithContext("Author not found, ID is null");
                     return NotFound();
                 }
 
