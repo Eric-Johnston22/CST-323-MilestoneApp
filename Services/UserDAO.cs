@@ -202,47 +202,51 @@ namespace CST_323_MilestoneApp.Services
 
         public async Task<List<RecentInteraction>> GetRecentInteractionsAsync()
         {
-            var recentInteraction = await _context.WantToRead
-            .Select(w => new RecentInteraction
+            using (_logger.LogMethodEntry())
             {
-                UserName = w.User.Username,
-                InteractionType = "Added to Want to Read",
-                BookTitle = w.Book.Title,
-                BookId = w.Book_id,
-                Date = w.DateAdded
-            })
-            .Union(_context.CurrentlyReading
-                .Select(c => new RecentInteraction
+                _logger.LogInformationWithContext("Retrieving the last 10 User interactions");
+                var recentInteraction = await _context.WantToRead
+                .Select(w => new RecentInteraction
                 {
-                    UserName = c.User.Username,
-                    InteractionType = "Added to Currently Reading",
-                    BookTitle = c.Book.Title,
-                    BookId = c.Book_id,
-                    Date = c.Start_date
-                }))
-            .Union(_context.ReadingHistory
-                .Select(h => new RecentInteraction
-                {
-                    UserName = h.User.Username,
-                    InteractionType = "Added to Have Read",
-                    BookTitle = h.Book.Title,
-                    BookId= h.Book_id,
-                    Date = h.Finish_date
-                }))
-            .Union(_context.Reviews
-                .Select(r => new RecentInteraction
-                {
-                    UserName = r.User.Username,
-                    InteractionType = "Reviewed",
-                    BookTitle = r.Book.Title,
-                    BookId = r.Book_id,
-                    Date = r.Review_date
-                }))
-            .OrderByDescending(ri => ri.Date)
-            .Take(10)
-            .ToListAsync();
+                    UserName = w.User.Username,
+                    InteractionType = "Added to Want to Read",
+                    BookTitle = w.Book.Title,
+                    BookId = w.Book_id,
+                    Date = w.DateAdded
+                })
+                .Union(_context.CurrentlyReading
+                    .Select(c => new RecentInteraction
+                    {
+                        UserName = c.User.Username,
+                        InteractionType = "Added to Currently Reading",
+                        BookTitle = c.Book.Title,
+                        BookId = c.Book_id,
+                        Date = c.Start_date
+                    }))
+                .Union(_context.ReadingHistory
+                    .Select(h => new RecentInteraction
+                    {
+                        UserName = h.User.Username,
+                        InteractionType = "Added to Have Read",
+                        BookTitle = h.Book.Title,
+                        BookId= h.Book_id,
+                        Date = h.Finish_date
+                    }))
+                .Union(_context.Reviews
+                    .Select(r => new RecentInteraction
+                    {
+                        UserName = r.User.Username,
+                        InteractionType = "Reviewed",
+                        BookTitle = r.Book.Title,
+                        BookId = r.Book_id,
+                        Date = r.Review_date
+                    }))
+                .OrderByDescending(ri => ri.Date)
+                .Take(10)
+                .ToListAsync();
 
-            return recentInteraction;
+                return recentInteraction;
+            }
         }
     }
 }
