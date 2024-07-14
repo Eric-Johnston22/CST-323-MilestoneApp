@@ -15,6 +15,9 @@ namespace CST_323_MilestoneApp.Models
         [ForeignKey("Book_id")]
         public int Book_id { get; set; }
 
+        [Column("date_added")]
+        public DateTime DateAdded { get; set; }
+
         public virtual User User { get; set; }
         public virtual Book Book { get; set; }
     }

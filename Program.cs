@@ -70,8 +70,8 @@ namespace CST_323_MilestoneApp
             builder.Services.AddScoped<UserDAO>();
 
             // Retrieve the connection string
-            //var connectionString = builder.Configuration.GetConnectionString("LibraryContext");
-            var connectionString = builder.Configuration["LibraryContext"];
+            //var connectionString = builder.Configuration.GetConnectionString("LibraryContext"); // Retrieves connection string from User Secrets
+            var connectionString = builder.Configuration["LibraryContext"]; // Retrieves connection string from Azure KeyVault
             
 
 
@@ -95,7 +95,8 @@ namespace CST_323_MilestoneApp
 
             var app = builder.Build();
             //var logger = app.Services.GetRequiredService<ILogger<Program>>();
-            Log.Information("Test Log from Program.cs");
+            //Log.Information("Test Log from Program.cs");
+            //Log.Information($"Connection String: {connectionString}");
             // Log the current environment
             //logger.LogInformation($"Current Environment: {environment.EnvironmentName}");
             //logger.LogInformation($"Connection String: {connectionString}");  // Log the connection string

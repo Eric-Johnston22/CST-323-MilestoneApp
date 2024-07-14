@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<CST_323_MilestoneApp.Models.RecentInteraction>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -11,4 +12,16 @@
         <a class="btn btn-primary" href="@Url.Action("Register", "User")">Register</a>
         <a class="btn btn-secondary" href="@Url.Action("Login", "User")">Login</a>
     </div>
+</div>
+
+<div>
+    <h3>Recent Interactions</h3>
+    <ul>
+        @foreach (var interaction in Model)
+        {
+            <li>
+                <strong>@interaction.UserName</strong> @interaction.InteractionType <strong>@interaction.BookTitle</strong> on @interaction.Date.ToString("MMMM dd, yyyy")
+            </li>
+        }
+    </ul>
 </div>

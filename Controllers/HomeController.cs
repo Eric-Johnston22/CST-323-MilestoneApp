@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Serilog.Context;
 using CST_323_MilestoneApp.Utilities;
+using CST_323_MilestoneApp.Services;
 
 namespace CST_323_MilestoneApp.Controllers
 {
@@ -11,18 +12,21 @@ namespace CST_323_MilestoneApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly LibraryContext _context;
+        private readonly UserDAO _userDAO;
 
-        public HomeController(ILogger<HomeController> logger, LibraryContext context)
+        public HomeController(ILogger<HomeController> logger, LibraryContext context, UserDAO userDAO)
         {
             _logger = logger;
             _context = context;
+            _userDAO = userDAO;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             using (_logger.LogMethodEntry())
             {
-                return View();
+                var recentInteractions = await _userDAO.GetRecentInteractionsAsync();
+                return View(recentInteractions);
             }
 
         }
