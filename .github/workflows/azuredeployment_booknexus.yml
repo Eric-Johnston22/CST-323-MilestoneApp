@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - BookNexus
 
 on:
@@ -20,21 +17,23 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-          
-      - name: Clean build directory
-        run: dotnet clean CST-323-MilestoneApp.csproj --configuration Release
-        
+
+      - name: Print environment variables
+        run: |
+          echo DOTNET_ROOT: ${{env.DOTNET_ROOT}}
+          echo PATH: ${{env.PATH}}
+
       - name: Build with dotnet
-        run: dotnet build CST-323-MilestoneApp.csproj --configuration Release
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish CST-323-MilestoneApp.csproj -c Release -o "${{github.workspace}}/myapp"
+        run: dotnet publish -c Release -o ./myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: "${{github.workspace}}/myapp"
+          path: ./myapp
 
   deploy:
     runs-on: windows-latest
@@ -54,9 +53,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0EDA6203E371459D857389FE0D615947 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2DED515442EF45A4AEEA06A04D64003E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6A60D58F738C47C5ACFDCFB1B1219A1C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0232AA20C17C4D1A9A4277B05F4FB1A3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7058D80C7F7E4952867AD5B330C0A57A }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9A3D1E4BA83640F89F465D04873B1A23 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -65,4 +64,3 @@ jobs:
           app-name: 'BookNexus'
           slot-name: 'Production'
           package: .
-          
