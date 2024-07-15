@@ -64,4 +64,12 @@ jobs:
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D8545493F184413FBCDFB04D9174ADE2 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0FA0E636DF2D4909AE0E7395A4DAE5E8 }}
-          subscription-id: ${{ secrets.AZUREAPPSE
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D8BA67AA88864EC1BB0E35ED4A678519 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'BookNexus'
+          slot-name: 'Production'
+          package: ./myapp
