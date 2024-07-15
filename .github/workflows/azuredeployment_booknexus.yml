@@ -22,11 +22,12 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Verify project file exists
+        shell: bash
         run: |
-          if not exist ./*.csproj (
-            echo Project file does not exist.
+          if [ ! -f ./*.csproj ]; then
+            echo "Project file does not exist."
             exit 1
-          )
+          fi
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ./myapp
