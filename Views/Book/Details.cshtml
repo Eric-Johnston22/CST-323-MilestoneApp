@@ -66,86 +66,78 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
-    // AJAX add books to currently reading
     $(document).ready(function () {
-        $('#currentlyReadingForm').submit(function (event) {
-            event.preventDefault();
-            var bookId = $(this).data('book-id');
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("AddToCurrentlyReading", "Book")',
-                data: { bookId: bookId },
-                success: function (response) {
-                    var messageContainer = $('#message-container');
-                    messageContainer.html('');
-
-                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
-                    messageContainer.append(messageHtml);
-
-                    setTimeout(function () {
-                        messageContainer.children().fadeOut('slow', function () {
-                            $(this).remove();
-                        });
-                    }, 6000); // 5000 milliseconds = 5 seconds
-                },
-                error: function () {
-                    alert('Error adding book to Currently Reading list.');
-                }
-            });
-        });
-    });
-
-    $(document).ready(function () {
+        // AJAX for adding books to Want to Read
         $('#wantToReadForm').submit(function (event) {
             event.preventDefault();
             var bookId = $(this).data('book-id');
-            console.log("TEST TEST");
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToWantToRead", "Book")',
                 data: { bookId: bookId },
                 success: function (response) {
+                    console.log("Response from Want to Read:", response);
                     var messageContainer = $('#message-container');
                     messageContainer.html('');
-
                     var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
                     messageContainer.append(messageHtml);
-
                     setTimeout(function () {
                         messageContainer.children().fadeOut('slow', function () {
                             $(this).remove();
                         });
-                    }, 6000); // 5000 milliseconds = 5 seconds
+                    }, 6000); // 6000 milliseconds = 6 seconds
                 },
                 error: function () {
                     alert('Error adding book to Want To Read list.');
                 }
             });
         });
-    });
 
-    $(document).ready(function () {
+        // AJAX for adding books to Currently Reading
+        $('#currentlyReadingForm').submit(function (event) {
+            event.preventDefault();
+            var bookId = $(this).data('book-id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToCurrentlyReading", "Book")',
+                data: { bookId: bookId },
+                success: function (response) {
+                    console.log("Response from Currently Reading:", response);
+                    var messageContainer = $('#message-container');
+                    messageContainer.html('');
+                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
+                    messageContainer.append(messageHtml);
+                    setTimeout(function () {
+                        messageContainer.children().fadeOut('slow', function () {
+                            $(this).remove();
+                        });
+                    }, 6000); // 6000 milliseconds = 6 seconds
+                },
+                error: function () {
+                    alert('Error adding book to Currently Reading list.');
+                }
+            });
+        });
+
+        // AJAX for adding books to Have Read
         $('#haveReadForm').submit(function (event) {
             event.preventDefault();
             var bookId = $(this).data('book-id');
-
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToHaveRead", "Book")',
                 data: { bookId: bookId },
                 success: function (response) {
+                    console.log("Response from Have Read:", response);
                     var messageContainer = $('#message-container');
                     messageContainer.html('');
-
                     var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
                     messageContainer.append(messageHtml);
-
                     setTimeout(function () {
                         messageContainer.children().fadeOut('slow', function () {
                             $(this).remove();
                         });
-                    }, 6000); // 5000 milliseconds = 5 seconds
+                    }, 6000); // 6000 milliseconds = 6 seconds
                 },
                 error: function () {
                     alert('Error adding book to Have Read list.');

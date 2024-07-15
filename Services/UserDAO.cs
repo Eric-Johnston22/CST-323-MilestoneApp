@@ -122,7 +122,7 @@ namespace CST_323_MilestoneApp.Services
                 }
                 else
                 {
-                    var wantToRead = new WantToRead { User_id = userId, Book_id = bookId };
+                    var wantToRead = new WantToRead { User_id = userId, Book_id = bookId, DateAdded =  DateTime.Now};
                     _context.WantToRead.Add(wantToRead);
                     _logger.LogInformationWithContext($"Saving book {bookId} to user {userId}'s WantToRead list");
                     await _context.SaveChangesAsync();

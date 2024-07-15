@@ -88,7 +88,7 @@ namespace CST_323_MilestoneApp.Controllers
             {
                 _logger.LogInformationWithContext($"Checking if book {bookId} is already in 'CurrentlyReading' list");
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // Get the logged-in user's ID
-                bool result = await _userDAO.AddToWantToReadAsync(userId, bookId); // Check if the book is already in the user's list
+                bool result = await _userDAO.AddToCurrentlyReadingAsync(userId, bookId); // Check if the book is already in the user's list
 
                 if (!result)
                 {
@@ -115,7 +115,7 @@ namespace CST_323_MilestoneApp.Controllers
             using (_logger.LogMethodEntry(nameof(AddToHaveRead), bookId))
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // Get the logged-in user's ID
-                bool result = await _userDAO.AddToWantToReadAsync(userId, bookId); // Check if the book is already in the user's list
+                bool result = await _userDAO.AddToHaveReadAsync(userId, bookId); // Check if the book is already in the user's list
 
                 if (!result)
                 {
