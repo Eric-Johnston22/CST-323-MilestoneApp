@@ -4,31 +4,34 @@
     ViewBag.Title = "User Profile";
 }
 
-<div class="containter">
+<div class="container">
     <div class="row">
-        <dic class="col" align="center">
+        <div class="col text-center">
             <h2>@Model.Username's Profile</h2>
-        </dic>
+        </div>
     </div>
 
-    <div class="row">
+    <hr />
 
-        <div class="col">
+    <div class="row profile-columns">
+        <div class="col profile-column">
             <h3>Currently Reading</h3>
-            <ul>
+            <ul id="currentlyReadingList" class="book-list">
                 @if (Model.CurrentlyReading.Any())
                 {
                     @foreach (var entry in Model.CurrentlyReading)
                     {
-                        <li>
-                            <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id"> @entry.Book.Title </a>
-                            @if (ViewBag.LoggedInUserId == Model.User_id)
-                            {
-                                <form asp-action="FinishReading" method="post" style="display:inline;">
-                                    <input type="hidden" name="bookId" value="@entry.Book_id" />
-                                    <button type="submit" class="btn btn-primary">Finish Reading</button>
-                                </form>
-                            }
+                        <li class="book-item" data-book-id="@entry.Book_id">
+                            <div class="book-info">
+                                <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id" class="book-title">@entry.Book.Title</a>
+                                @if (ViewBag.LoggedInUserId == Model.User_id)
+                                {
+                                    <form asp-action="FinishReading" method="post" class="book-action">
+                                        <input type="hidden" name="bookId" value="@entry.Book_id" />
+                                        <button type="submit" class="btn btn-primary">Finish Reading</button>
+                                    </form>
+                                }
+                            </div>
                         </li>
                     }
                 }
@@ -38,16 +41,18 @@
                 }
             </ul>
         </div>
-        <div class="col">
+        <div class="col profile-column">
             <h3>Have Read</h3>
-            <ul>
+            <ul class="book-list">
                 @if (Model.ReadingHistory.Any())
                 {
                     @foreach (var entry in Model.ReadingHistory)
                     {
-                        <li>
-                            <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id"> @entry.Book.Title</a>
-                            (Finished on: @entry.Finish_date.ToShortDateString())
+                        <li class="book-item">
+                            <div class="book-info">
+                                <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id" class="book-title">@entry.Book.Title</a>
+                                (Finished on: @entry.Finish_date.ToShortDateString())
+                            </div>
                         </li>
                     }
                 }
@@ -58,15 +63,22 @@
             </ul>
         </div>
 
-        <div class="col">
-
+        <div class="col profile-column">
             <h3>Want to Read</h3>
-            <ul>
+            <ul id="wantToReadList" class="book-list">
                 @if (Model.WantToRead.Any())
                 {
                     @foreach (var entry in Model.WantToRead)
                     {
-                        <li><a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id"> @entry.Book.Title</a></li>
+                        <li class="book-item" data-book-id="@entry.Book_id">
+                            <div class="book-info">
+                                <a asp-controller="Book" asp-action="Details" asp-route-id="@entry.Book_id" class="book-title">@entry.Book.Title</a>
+                                @if (ViewBag.LoggedInUserId == Model.User_id)
+                                {
+                                    <button class="btn btn-success move-to-currently-reading" data-book-id="@entry.Book_id">Move to Currently Reading</button>
+                                }
+                            </div>
+                        </li>
                     }
                 }
                 else
@@ -74,21 +86,24 @@
                     <li>No books in the "Want to Read" list.</li>
                 }
             </ul>
-
         </div>
-
     </div>
+
+    <hr />
+
     <div class="row" align="center">
         <div class="col">
             <h3>Reviews</h3>
-            <ul style="display: inline-block; text-align: left; list-style-position: inside;">
+            <ul class="book-list" style="display: inline-block; text-align: left; list-style-position: inside;">
                 @if (Model.Review.Any())
                 {
                     @foreach (var review in Model.Review)
                     {
-                        <li style="text-align: left;">
-                            <a asp-controller="User" asp-action="ReviewDetails" asp-route-id="@review.Review_id"> <strong>@review.Book.Title:</strong></a>
-                            Rating: @review.Rating
+                        <li class="book-item">
+                            <div class="book-info">
+                                <a asp-controller="User" asp-action="ReviewDetails" asp-route-id="@review.Review_id" class="book-title"><strong>@review.Book.Title:</strong></a>
+                                Rating: @review.Rating
+                            </div>
                         </li>
                     }
                 }
@@ -99,7 +114,57 @@
             </ul>
         </div>
     </div>
+    <div id="message-container"></div>
 </div>
 
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.move-to-currently-reading').click(function (event) {
+            event.preventDefault();
+            var bookId = $(this).data('book-id');
+            console.log("clicked");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MoveToCurrentlyReading", "User")',
+                data: { bookId: bookId },
+                success: function (response) {
+                    var messageContainer = $('#message-container');
+                    messageContainer.html('');
+
+                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
+                    messageContainer.append(messageHtml);
+
+                    if (response.success) {
+                        // Remove the book from Want to Read list
+                        $(`li[data-book-id="${bookId}"]`).remove();
+
+                        // Add the book to Currently Reading list
+                        var newListItem = `<li class="book-item" data-book-id="${bookId}">
+                                                    <div class="book-info">
+                                                        <a href="/Book/Details/${bookId}" class="book-title">${response.bookTitle}</a>
+                                                        <form asp-action="FinishReading" method="post" class="book-action">
+                                                            <input type="hidden" name="bookId" value="${bookId}" />
+                                                            <button type="submit" class="btn btn-primary">Finish Reading</button>
+                                                        </form>
+                                                    </div>
+                                                </li>`;
+                        $('#currentlyReadingList').append(newListItem);
+                    }
+
+                    setTimeout(function () {
+                        messageContainer.children().fadeOut('slow', function () {
+                            $(this).remove();
+                        });
+                    }, 6000); // 6000 milliseconds = 6 seconds
+                },
+                error: function () {
+                    alert('Error moving book to Currently Reading list.');
+                }
+            });
+        });
+    });
+</script>
 
 

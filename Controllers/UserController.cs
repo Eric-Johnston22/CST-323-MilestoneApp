@@ -15,6 +15,7 @@ namespace CST_323_MilestoneApp.Controllers
         private readonly BookDAO _bookDAO;
         private readonly ILogger<UserController> _logger;
 
+        // Constructor to initialize DAOs and logger
         public UserController(UserDAO userDAO, BookDAO bookDAO, ILogger<UserController> logger)
         {
             _userDAO = userDAO;
@@ -48,7 +49,6 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry(nameof(Register), user))
             {
-
                 if (user == null)
                 {
                     _logger.LogError("User object is null.");
@@ -63,6 +63,7 @@ namespace CST_323_MilestoneApp.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    // Check if password matches confirmation password
                     if (user.Password != user.ConfirmPassword)
                     {
                         _logger.LogWarningWithContext("Password and confirmation password do not match");
@@ -70,7 +71,7 @@ namespace CST_323_MilestoneApp.Controllers
                         return View(user);
                     }
 
-                    var result = await _userDAO.RegisterUserAsync(user);
+                    var result = await _userDAO.RegisterUserAsync(user); // Register the user
                     if (result)
                     {
                         _logger.LogInformationWithContext("User registered successfully.");
@@ -102,21 +103,21 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry(nameof(Login), user))
             {
-                var loggedInUser = await _userDAO.AuthenticateUserAsync(user.Username, user.Password);
+                var loggedInUser = await _userDAO.AuthenticateUserAsync(user.Username, user.Password); // Authenticate user
 
                 if (loggedInUser != null)
                 {
                     var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, loggedInUser.User_id.ToString()),
-                    new Claim(ClaimTypes.Name, loggedInUser.Username)
-                };
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, loggedInUser.User_id.ToString()),
+                        new Claim(ClaimTypes.Name, loggedInUser.Username)
+                    };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)); // Sign in user
 
-                    _logger.LogInformationWithContext("User logged in succesfully");
+                    _logger.LogInformationWithContext("User logged in successfully");
                     return RedirectToAction("Profile", new { id = loggedInUser.User_id });
                 }
 
@@ -132,9 +133,9 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry())
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Get user ID
                 _logger.LogInformationWithContext($"User {userId} logging out");
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // Sign out user
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -145,38 +146,46 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry(nameof(Profile), id))
             {
-                var user = await _userDAO.GetUserByIdAsync(id);
+                var user = await _userDAO.GetUserByIdAsync(id); // Get user by ID
                 if (user == null)
                 {
                     return NotFound(); // Handle the case where the user is not found
                 }
 
-                // Pass the logged-in user's ID to the view
-                var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                ViewBag.LoggedInUserId = loggedInUserId;
+                if (User.Identity.IsAuthenticated)
+                {
+                    // If the user is authenticated, pass user's ID to the view
+                    var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    ViewBag.LoggedInUserId = loggedInUserId;
+                }
+                else
+                {
+                    // If not, return null to the view
+                    ViewBag.LoggedInUserId = null;
+                }
 
                 return View(user);
             }
         }
 
+        // POST: User/FinishReading
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> FinishReading(int bookId)
         {
             using (_logger.LogMethodEntry(nameof(FinishReading), bookId))
             {
-
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                await _userDAO.FinishReadingBookAsync(userId, bookId);
-                var book = await _bookDAO.GetBookByIdAsync(bookId);
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // Get logged-in user's ID
+                await _userDAO.FinishReadingBookAsync(userId, bookId); // Mark book as finished reading
+                var book = await _bookDAO.GetBookByIdAsync(bookId); // Get book details
                 if (book == null)
                 {
                     _logger.LogError($"Book not found by ID: {bookId}");
                     return NotFound();
                 }
                 _logger.LogInformationWithContext($"Book added to Finished Reading List: {bookId}");
-                var review = new Review { Book_id = bookId, Book = book };
-                return View("WriteReview", review);
+                var review = new Review { Book_id = bookId, Book = book }; // Create a new review object
+                return View("WriteReview", review); // Redirect to write review view
             }
         }
 
@@ -186,15 +195,15 @@ namespace CST_323_MilestoneApp.Controllers
         {
             using (_logger.LogMethodEntry(nameof(WriteReview), bookId))
             {
-                var book = await _bookDAO.GetBookByIdAsync(bookId);
+                var book = await _bookDAO.GetBookByIdAsync(bookId); // Get book details
                 if (book == null)
                 {
                     _logger.LogWarningWithContext($"Book not found by ID: {bookId}");
                     return NotFound();
                 }
-                var review = new Review { Book_id = bookId, Book = book };
-                _logger.LogInformationWithContext($"Retrived review {review.Review_id} for book {bookId} from database");
-                return View(review);
+                var review = new Review { Book_id = bookId, Book = book }; // Create a new review object
+                _logger.LogInformationWithContext($"Retrieved review {review.Review_id} for book {bookId} from database");
+                return View(review); // Return the review view
             }
         }
 
@@ -211,7 +220,7 @@ namespace CST_323_MilestoneApp.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // Get logged-in user's ID
                     review.User_id = userId;
                     review.Review_date = DateTime.Now;
 
@@ -221,7 +230,7 @@ namespace CST_323_MilestoneApp.Controllers
 
                     _logger.LogInformationWithContext($"Saving Review: {review.Review_id} to database");
 
-                    await _userDAO.AddReviewAsync(review);
+                    await _userDAO.AddReviewAsync(review); // Add the review to the database
 
                     return RedirectToAction("Profile", new { id = userId });
                 }
@@ -232,6 +241,7 @@ namespace CST_323_MilestoneApp.Controllers
             }
         }
 
+        // GET: User/ReviewDetails/{id}
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> ReviewDetails(int id)
@@ -239,15 +249,35 @@ namespace CST_323_MilestoneApp.Controllers
             using (_logger.LogMethodEntry(nameof(ReviewDetails), id))
             {
                 _logger.LogInformationWithContext($"Retrieved review {id} from database");
-                var review = await _userDAO.GetReviewById(id);
+                var review = await _userDAO.GetReviewById(id); // Get review details by ID
                 if (review == null)
                 {
                     _logger.LogError("Review is null");
                     return NotFound();
                 }
 
-                return View(review);
+                return View(review); // Return the review details view
+            }
+        }
+
+        // POST: User/MoveToCurrentlyReading
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> MoveToCurrentlyReading(int bookId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // Get logged-in user's ID
+            var result = await _userDAO.MoveToCurrentlyReadingAsync(userId, bookId); // Move the book to Currently Reading list
+
+            if (result)
+            {
+                var book = await _bookDAO.GetBookByIdAsync(bookId); // Get book details
+                return Json(new { success = true, message = "Book moved to Currently Reading list.", bookTitle = book.Title }); // Return success message
+            }
+            else
+            {
+                return Json(new { success = false, message = "Book is already in Currently Reading or Have Read list." }); // Return failure message
             }
         }
     }
 }
+

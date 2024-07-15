@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CST_323_MilestoneApp.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using CST_323_MilestoneApp.Services;
 using CST_323_MilestoneApp.Utilities;
 
@@ -24,19 +17,21 @@ namespace CST_323_MilestoneApp.Controllers
         }
 
         // GET: /Author
+        // Retrieves a list of all authors
         public async Task<IActionResult> Index()
         {
             using (_logger.LogMethodEntry())
             {
                 _logger.LogInformationWithContext("Retrieving authors from database");
          
-                var authors = await _authorDAO.GetAllAuthorsAsync(); // call DAO
+                var authors = await _authorDAO.GetAllAuthorsAsync(); // Fetch all authors from the DAO
 
-                return View(authors);
+                return View(authors); // Pass the list of authors to the view
             }
         }
 
         // GET: /Author/Details/{id}
+        // Retrieves details of a specific author by ID
         public async Task<IActionResult> Details(int? id)
         {
             using (_logger.LogMethodEntry(nameof(Details), id))
@@ -44,11 +39,12 @@ namespace CST_323_MilestoneApp.Controllers
                 if (id == null)
                 {
                     _logger.LogWarningWithContext("Author not found, ID is null");
-                    return NotFound();
+                    return NotFound(); // Return 404 if ID is null
                 }
 
-                var author = await _authorDAO.GetAuthorById(Convert.ToInt32(id)); // call DAO
-                return View(author);
+                var author = await _authorDAO.GetAuthorById(Convert.ToInt32(id)); // Fetch author details from the DAO
+                return View(author); // Pass the author details to the view
+
             }
         }
 

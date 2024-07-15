@@ -3,25 +3,35 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome TEST TEST</h1>
-    <h2>Deciding what to read next?</h2>
-    <p>You’re in the right place. Tell us what titles or genres you’ve enjoyed in the past, and we’ll give you surprisingly insightful recommendations.</p>
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <h1 class="display-4">Welcome</h1>
+            <h2>Deciding what to read next?</h2>
+            <p>You’re in the right place. Tell us what titles or genres you’ve enjoyed in the past, and we’ll give you surprisingly insightful recommendations.</p>
 
-    <div>
-        <a class="btn btn-primary" href="@Url.Action("Register", "User")">Register</a>
-        <a class="btn btn-secondary" href="@Url.Action("Login", "User")">Login</a>
+            <div>
+                <a class="btn btn-primary" href="@Url.Action("Register", "User")">Register</a>
+                <a class="btn btn-secondary" href="@Url.Action("Login", "User")">Login</a>
+                <br />
+                <br />
+            </div>
+        </div>
+        <hr />
     </div>
-</div>
 
-<div class="row" align="center">
-    <h3>Recent Interactions</h3>
-    <ul>
-        @foreach (var interaction in Model)
-        {
-            <li>
-                <strong>@interaction.UserName</strong> @interaction.InteractionType <strong>@interaction.BookTitle</strong> on @interaction.Date.ToString("MMMM dd, yyyy")
-            </li>
-        }
-    </ul>
+    <div class="row" align="center">
+        <div class="col">
+            <h3>Recent Interactions</h3>
+            <ul style="display: inline-block; text-align: left; list-style-position: inside;">
+                @foreach (var interaction in Model)
+                {
+                    <li style="text-align: left;">
+                        <a asp-controller="User" asp-action="Profile" asp-route-id="@interaction.UserId"><strong>@interaction.UserName</strong></a>
+                        @interaction.InteractionType <a asp-controller="Book" asp-action="Details" asp-route-id="@interaction.BookId"><strong>@interaction.BookTitle</strong></a> on @interaction.Date.ToString("MMMM dd, yyyy")
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>

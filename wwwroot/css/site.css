@@ -20,3 +20,57 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.profile-columns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile-column {
+    flex: 1;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-left: 1px solid rgba(221, 221, 221, 0.5); /* Semi-transparent */
+}
+
+    .profile-column:first-child {
+        border-left: none;
+    }
+
+.book-list {
+    list-style: none;
+    padding: 0;
+}
+
+.book-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.book-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.book-title {
+    flex: 1;
+    text-align: left;
+    margin-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-action {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
